@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimal Dungeon Game</title>
+    <!-- THIS VERSION WORKS -->
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1;
+        }
+        .game-area {
+            background-color: #111;
+            border: 2px solid #333;
+            padding: 10px;
+            font-size: 12px;
+            line-height: 1;
+            white-space: pre;
+        }
+        .player { color: #ff0; }
+        .monster { color: #f00; }
+        .floor { color: #333; }
+        .message-log {
+            margin-top: 10px;
+            color: #0f0;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-area" id="game-area"></div>
+    <div class="message-log" id="message-log"></div>
+
+    <script>
+        // Configuration
+        const CONFIG = {
+            WIDTH: 20,
+            HEIGHT: 10,
+            SYMBOLS: {
+                player: '@',
+                monster: 'm',
+                floor: '.'
+            }
+        };
+
+        // Game state
+        const GameState = {
+            player: { x: 5, y: 5, hp: 20, maxHp: 20, damage: 3, alive: true },
+            monster: { x: 15, y: 5, hp: 10, maxHp: 10, damage: 2 },
+            map: [],
+            messages: [],
+            inCombat: false,
+
+            init() {
+                this.player = { x: 5, y: 5, hp: 20, maxHp: 20, damage: 3, alive: true };
+                this.monster = { x: 15, y: 5, hp: 10, maxHp: 10, damage: 2 };
+                this.inCombat = false;
+                this.messages = [];
+                this.map = Array(CONFIG.HEIGHT).fill().map(() => 
+                    Array(CONFIG.WIDTH).fill(CONFIG.SYMBOLS.floor)
+                );
+            },
+            addMessage(text) {
+                this.messages.push(text);
+                if (this.messages.length > 5) this.messages.shift();
+            },
+            getTile(x, y) {
+                if (x < 0 || x >= CONFIG.WIDTH || y < 0 || y >= CONFIG.HEIGHT) return null;
+                return this.map[y][x];
+            }
+        };
+
+        // Utility functions
+        const Utils = {
+            randomInt(min, max) {
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+        };
+
+        // UI management
+        const UI = {
+            update() {
+                this.renderGameArea();
+                this.renderMessages();
+            },
+            renderGameArea() {
+                const gameArea = document.getElementById('game-area');
+                let output = '';
+                for (let y = 0; y < CONFIG.HEIGHT; y++) {
+                    for (let x = 0; x < CONFIG.WIDTH; x++) {
+                        if (GameState.player.alive && x === GameState.player.x && y === GameState.player.y) {
+                            output += '<span class="player">@</span>';
+                        } else if (GameState.monster && x === GameState.monster.x && y === GameState.monster.y) {
+                            output += '<span class="monster">m</span>';
+                        } else {
+                            output += '<span class="floor">.</span>';
+                        }
+                    }
+                    output += '\n';
+                }
+                gameArea.innerHTML = output;
+            },
+            renderMessages() {
+                const log = document.getElementById('message-log');
+                log.innerHTML = GameState.messages.join('<br>');
+            },
+            addMessage(text) {
+                GameState.addMessage(text);
+                this.renderMessages();
+            }
+        };
+
+        // Player management
+        const Player = {
+            move(dx, dy) {
+                if (!GameState.player.alive) return false;
+
+                const newX = GameState.player.x + dx;
+                const newY = GameState.player.y + dy;
+
+                // Check bounds
+                if (newX < 0 || newX >= CONFIG.WIDTH || newY < 0 || newY >= CONFIG.HEIGHT) {
+                    UI.addMessage("You hit the edge of the area.");
+                    return false;
+                }
+
+                // Check for monster collision
+                if (GameState.monster && newX === GameState.monster.x && newY === GameState.monster.y) {
+                    GameState.inCombat = true;
+                    this.attack(GameState.monster);
+                    return true; // Turn consumed
+                }
+
+                // Move player
+                GameState.player.x = newX;
+                GameState.player.y = newY;
+                GameState.inCombat = false; // End combat if moving away
+                return true;
+            },
+           
+            attack(monster) {
+                const damage = Utils.randomInt(1, GameState.player.damage);
+                monster.hp -= damage;
+                UI.addMessage(`You hit the monster for ${damage} damage! (HP: ${monster.hp})`);
+
+                if (monster.hp <= 0) {
+                    UI.addMessage("The monster dies!");
+                    GameState.monster = null;
+                    GameState.inCombat = false;
+                    return;
+                }
+
+                // Monster retaliates
+                const monsterDamage = Utils.randomInt(1, monster.damage);
+                GameState.player.hp -= monsterDamage;
+                UI.addMessage(`The monster hits you for ${monsterDamage} damage! (HP: ${GameState.player.hp})`);
+
+                if (GameState.player.hp <= 0) {
+                    UI.addMessage("You have died! Press Enter to restart.");
+                    GameState.player.alive = false;
+                    GameState.inCombat = false;
+                }
+            }
+        };
+
+        // Monster AI
+        const MonsterAI = {
+            move() {
+                if (!GameState.monster || GameState.inCombat) return;
+
+                const directions = [
+                    { x: -1, y: 0 }, { x: 1, y: 0 },
+                    { x: 0, y: -1 }, { x: 0, y: 1 }
+                ];
+                const dir = directions[Utils.randomInt(0, 3)];
+                const newX = GameState.monster.x + dir.x;
+                const newY = GameState.monster.y + dir.y;
+
+                if (newX >= 0 && newX < CONFIG.WIDTH && newY >= 0 && newY < CONFIG.HEIGHT &&
+                    !(newX === GameState.player.x && newY === GameState.player.y)) {
+                    GameState.monster.x = newX;
+                    GameState.monster.y = newY;
+                }
+            }
+        };
+
+        // Game controller
+        const Game = {
+            init() {
+                GameState.init();
+                UI.update();
+                this.setupControls();
+            },
+            setupControls() {
+                document.addEventListener('keydown', (e) => {
+                    let actionTaken = false;
+
+                    if (!GameState.player.alive && e.key === 'Enter') {
+                        this.init();
+                        UI.addMessage("Game restarted!");
+                        return;
+                    }
+
+                    if (!GameState.player.alive) return;
+
+                    switch (e.key.toLowerCase()) {
+                        case 'w':
+                        case 'arrowup':
+                            actionTaken = Player.move(0, -1);
+                            break;
+                        case 's':
+                        case 'arrowdown':
+                            actionTaken = Player.move(0, 1);
+                            break;
+                        case 'a':
+                        case 'arrowleft':
+                            actionTaken = Player.move(-1, 0);
+                            break;
+                        case 'd':
+                        case 'arrowright':
+                            actionTaken = Player.move(1, 0);
+                            break;
+                    }
+
+                    if (actionTaken) {
+                        if (!GameState.inCombat) {
+                            MonsterAI.move();
+                        }
+                        UI.update();
+                    }
+                });
+            }
+        };
+
+        // Start game
+        window.addEventListener('load', () => Game.init());
+    </script>
+</body>
+</html>
