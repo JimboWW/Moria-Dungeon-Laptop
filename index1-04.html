@@ -1,0 +1,196 @@
+<html  lang="en">
+<head>
+    <script type="text/javascript" src="config.js"></script>
+    <meta charset="UTF-8">
+    <!-- BUG LIST ---------------------------------------------------------------------
+    X 1. Fix monsters being too easy to kill.
+    2. Create a way to spend gold.
+    3. Create persistence in game (save game).
+    4. Fix death so it is permanent and player has to start over after death.
+    5. Create a graveyard for characters that have died(leaderboard).
+    6. Fix that it is too easy to avoid monsters and descend.
+    7. When player dies the @ symbol doesn't disappear like it should.
+    X 8. On one play the player when moving up and down started skipping every other row.
+    X 9. Sometimes, the monsters don't deal any damage to the player.
+    X 10. Fix screen so it doesn't move and so everything fits on the screen at 
+          100% zoom(chrome browser). Currently the messages section is below the bottom
+          of the browser.
+    >11. Reconfigure the rest function so it is riskier to rest. The way the game is currently 
+        configured, monsters never attack the player unless the player attacks them first. 
+        Reconfigure monsters so they can initiate attacks on the player before the player 
+        attacks them. Build AI into some or all the monsters so they follow the player when 
+        they get within a certain range of the player.
+    --------------------------------------------------------------------------- -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moria Dungeon</title>
+    <style>
+        /* NEW CSS 6/22*/
+        body {
+            margin: 0;
+            padding: 10px;
+            background-color: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.1;
+        }
+
+        .game-container {
+            display: flex;
+            gap: 15px;
+            max-height: calc(100vh - 60px);
+            overflow-y: auto;
+        }
+
+        .left-column {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .dungeon {
+            background-color: #111;
+            border: 2px solid #333;
+            padding: 8px;
+            font-size: 11px;
+            line-height: 1.1;
+            letter-spacing: 0;
+        }
+
+        .dungeon-row {
+            white-space: pre;
+            margin: 0;
+            padding: 0;
+        }
+
+        .sidebar {
+            min-width: 280px;
+            background-color: #111;
+            border: 2px solid #333;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-block {
+            margin-bottom: 8px; /* Reduced from 10px to save space */
+            border-bottom: 1px solid #333;
+            padding-bottom: 6px; /* Reduced from 8px */
+        }
+
+        .controls {
+            font-size: 11px;
+            color: #888;
+        }
+
+        .message-log {
+            flex: 1; /* Expand to fill remaining sidebar space */
+            min-height: 100px; /* Minimum height */
+            max-height: 200px; /* Limit to prevent overflow */
+            overflow-y: auto;
+            background-color: #000;
+            border: 1px solid #333;
+            padding: 5px;
+            display: flex;
+            flex-direction: column-reverse; /* New messages at bottom */
+            justify-content: flex-end; /* Align content to bottom */
+        }
+
+        .message {
+            margin-bottom: 2px;
+        }
+
+        .special-message {
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .player { color: #ff0; }
+        .wall { color: #666; }
+        .floor { color: #333; }
+        .monster { color: #f00; }
+        .treasure { color: #fa0; }
+        .stairs { color: #0af; }
+        .special-item { color: #ffd700; }
+
+        h1 {
+            color: #0f0;
+            text-align: center;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px #0f0;
+        }
+
+        /* Media query for smaller screens */
+        @media (max-width: 900px) {
+            .game-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .left-column {
+                width: 100%;
+            }
+            .sidebar {
+                min-width: auto;
+                width: 100%;
+            }
+            .dungeon {
+                font-size: 10px;
+            }
+            .message-log {
+                max-height: 150px; /* Adjust for smaller screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>MORIA DUNGEON</h1>
+    
+    <div class="game-container">
+        <div class="left-column">
+            <div class="dungeon" id="dungeon"></div>
+            <div class="controls">
+                <h3>Controls</h3>
+                <div>Move: Arrow Keys or WASD</div>
+                <div>Attack: Move into enemy</div>
+                <div>Stairs: &gt; (down), &lt; (up)</div>
+                <div>Rest: R (restore HP)</div>
+                <div>Restart: Enter (after death)</div>
+            </div>
+        </div>
+        
+        <div class="sidebar">
+            <div class="stat-block">
+                <h3>Character Stats</h3>
+                <div>Name: <span id="player-name">Unknown</span></div>
+                <div>Level: <span id="player-level">1</span></div>
+                <div>HP: <span id="player-hp">20</span>/<span id="player-max-hp">20</span></div>
+                <div>XP: <span id="player-xp">0</span></div>
+                <div>Gold: <span id="player-gold">0</span></div>
+                <div>Depth: <span id="dungeon-depth">1</span></div>
+            </div>
+            
+            <div class="stat-block">
+                <h3>Equipment</h3>
+                <div>Weapon: <span id="weapon">Dagger</span></div>
+                <div>Armor: <span id="armor">Cloth</span></div>
+            </div>
+            
+            <div class="stat-block">
+                <h3>Inventory</h3>
+                <div id="inventory">Empty</div>
+            </div>
+            
+            <div class="message-log" id="message-log">
+                <div class="message">You awaken in darkness, your memory foggy...</div>
+                <div class="message">Who are you? Why are you here?</div>
+                <div class="message">Perhaps the answers lie deeper in the dungeon...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+    
+</body>
+
+</html> 
+
