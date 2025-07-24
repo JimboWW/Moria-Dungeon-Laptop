@@ -1,0 +1,114 @@
+ /* NEW CSS 6/22*/
+ body {
+    margin: 0;
+    padding: 10px;
+    background-color: #000;
+    color: #0f0;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.1;
+}
+
+.game-container {
+    max-height: calc(100vh - 60px);
+}
+
+.left-column {
+    gap: 20px;
+    max-width: 45%;
+    float: left;
+    padding: 16px;
+}
+
+.dungeon {
+    background-color: #111;
+    border: 2px solid #333;
+    padding: 8px;
+    font-size: 11px;
+    line-height: 1.1;
+    letter-spacing: 0;
+}
+
+.dungeon-row {
+    white-space: pre;
+    margin: 0;
+    padding: 0;
+}
+
+.right-column {
+    gap: 20px;
+    max-width: 45%;
+    background-color: #111;
+    border: 2px solid #333;
+    float: right;
+}
+
+.stat-block {
+    margin-bottom: 8px; /* Reduced from 10px to save space */
+    border-bottom: 1px solid #333;
+    padding-bottom: 6px; /* Reduced from 8px */
+    padding: 8px;
+}
+
+.controls {
+    font-size: 11px;
+    color: #888;
+}
+
+.message-log {
+    flex: 1; /* Expand to fill remaining sidebar space */
+    min-height: 100px; /* Minimum height */
+    max-height: 200px; /* Limit to prevent overflow */
+    overflow-y: auto;
+    background-color: #000;
+    border: 1px solid #333;
+    padding: 5px;
+    display: flex;
+    flex-direction: column-reverse; /* New messages at bottom */
+    justify-content: flex-end; /* Align content to bottom */
+}
+
+.message {
+    margin-bottom: 2px;
+}
+
+.special-message {
+    color: #ffd700;
+    font-weight: bold;
+}
+
+.player { color: #ff0; }
+.wall { color: #666; }
+.floor { color: #333; }
+.monster { color: #f00; }
+.treasure { color: #fa0; }
+.stairs { color: #0af; }
+.special-item { color: #ffd700; }
+
+h1 {
+    color: #0f0;
+    text-align: center;
+    margin-bottom: 10px;
+    text-shadow: 0 0 10px #0f0;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 900px) {
+    .game-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .left-column {
+        width: 100%;
+    }
+    .sidebar {
+        min-width: auto;
+        width: 100%;
+    }
+    .dungeon {
+        font-size: 10px;
+    }
+    .message-log {
+        max-height: 150px; /* Adjust for smaller screens */
+    }
+}

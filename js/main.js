@@ -1,6 +1,10 @@
        
         // GameState()
-         const GameState = {
+        const gameContainerDiv = document.getElementById('game-container-div');
+        const createCharacterDiv = document.getElementById('create-character-div');
+        const newCharacterName = document.getElementById('p-name');
+
+        const GameState = {
             // Current game state
             state: {
                 // NEW player: {} 6/19
@@ -25,7 +29,9 @@
                 depth: 1,
                 messages: [],
                 memoryBook: null,
-                inCombat: false
+                inCombat: false,
+                gameActive: false,
+                currentScreen: "Create Character"
             },
             
             // Get current state
@@ -57,7 +63,9 @@
                     depth: 1,
                     messages: [],
                     memoryBook: null,
-                    inCombat: false
+                    inCombat: false,
+                    gameActive: false,
+                    currentScreen: "Create Character"
                 };
             },
 
@@ -907,8 +915,10 @@
                 const DEBOUNCE_MS = 100;
 
                 document.addEventListener('keydown', (event) => {
-                    event.preventDefault(); // Prevent browser defaults for all keys
-
+                    if (GameState.state.gameActive){
+                        event.preventDefault(); // Prevent browser defaults for all keys
+                    }
+                    
                     const now = Date.now();
                     if (now - lastProcessed < DEBOUNCE_MS) return;
 
@@ -982,3 +992,18 @@
         window.addEventListener('load', () => {
             Game.start();
         });
+
+        function activeScreen() {
+            if (GameState.state.currentScreen == "dungeon") {
+                gameContainerDiv.style.display = "flex";
+                createCharacterDiv.style.display = "none";
+                UI.updateDisplay();
+            }
+        }
+
+        function createCharacter() {
+            GameState.state.gameActive = true;
+            GameState.state.currentScreen = "dungeon";
+            GameState.state.player.name = newCharacterName.value;
+            activeScreen();
+        }
