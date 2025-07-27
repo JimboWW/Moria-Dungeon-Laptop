@@ -1,23 +1,31 @@
- /* NEW CSS 6/22*/
- body {
+body {
     margin: 0;
-    padding: 10px;
+    padding: 0; /* Remove padding to prevent scrolling */
     background-color: #000;
-    color: #0f0;
-    font-family: 'Courier New', monospace;
+    color: #fff;
+    font-family: 'Courier New', Courier, monospace;
     font-size: 13px;
     line-height: 1.1;
+    overflow: hidden; /* Prevent document scrolling */
 }
 
 .game-container {
-    max-height: calc(100vh - 60px);
+    display: flex;
+    gap: 15px;
+    max-height: calc(100vh - 44px); /* Adjusted for <h1> (24px font + 20px margin) */
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Prevent internal scrolling */
 }
 
 .left-column {
-    gap: 20px;
-    max-width: 45%;
-    float: left;
-    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 596px; /* From Issue #12 fix */
+    max-height: calc(100vh - 44px); /* Match game-container */
+    margin: 0;
+    overflow: hidden; /* Prevent overflow */
 }
 
 .dungeon {
@@ -27,10 +35,25 @@
     font-size: 11px;
     line-height: 1.1;
     letter-spacing: 0;
+    min-height: 284px;
+    max-height: 284px; /* Cap height to fit */
+    width: 100%;
+    box-sizing: border-box;
+    text-align: left;
+    overflow: hidden;
 }
 
 .dungeon-row {
     white-space: pre;
+    margin: 0;
+    padding: 0;
+    font-size: inherit;
+    line-height: inherit;
+}
+.dungeon-row span {
+    display: inline-block;
+    width: 7.2px;
+    text-align: center;
     margin: 0;
     padding: 0;
 }
@@ -56,16 +79,16 @@
 }
 
 .message-log {
-    flex: 1; /* Expand to fill remaining sidebar space */
-    min-height: 100px; /* Minimum height */
-    max-height: 200px; /* Limit to prevent overflow */
+    flex: 1;
+    min-height: 100px;
+    max-height: 200px; /* Ensure it doesn’t grow too tall */
     overflow-y: auto;
     background-color: #000;
     border: 1px solid #333;
     padding: 5px;
     display: flex;
-    flex-direction: column-reverse; /* New messages at bottom */
-    justify-content: flex-end; /* Align content to bottom */
+    flex-direction: column-reverse;
+    justify-content: flex-end;
 }
 
 .message {
@@ -88,8 +111,20 @@
 h1 {
     color: #0f0;
     text-align: center;
-    margin-bottom: 10px;
+    margin: 10px 0; /* Reduced from default, adjust as needed */
     text-shadow: 0 0 10px #0f0;
+    font-size: 24px; /* Ensure consistent height */
+}
+
+.sidebar {
+    min-width: 280px;
+    max-height: calc(100vh - 44px); /* Match game-container */
+    background-color: #111;
+    border: 2px solid #333;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 /* Media query for smaller screens */
@@ -100,15 +135,19 @@ h1 {
     }
     .left-column {
         width: 100%;
+        max-height: none; /* Allow stacking */
     }
     .sidebar {
         min-width: auto;
         width: 100%;
+        max-height: none;
     }
     .dungeon {
         font-size: 10px;
+        min-height: 260px;
+        max-height: 260px;
     }
     .message-log {
-        max-height: 150px; /* Adjust for smaller screens */
+        max-height: 150px;
     }
 }
