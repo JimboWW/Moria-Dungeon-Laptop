@@ -55,24 +55,44 @@
                 <div>Inventory: I</div>
             </div>
         </div>
-        
         <div class="right-column">
-            <div class="stat-block">
-                <h3>Character Stats</h3>
-                <div>Name: <span id="player-name"></span></div>
-                <div>Level: <span id="player-level"></span></div>
-                <div>HP: <span id="player-hp"></span>/<span id="player-max-hp"></span></div>
-                <div>XP: <span id="player-xp"></span></div>
-                <div>Gold: <span id="player-gold"></span></div>
-                <div>Depth: <span id="dungeon-depth"></span></div>
+            <h3>Character Stats</h3>
+            <div style="display: flex;">
+                <div>
+                    <div class="stat-block">
+                        <div>Name: <span id="player-name"></span></div>
+                        <div>Level: <span id="player-level"></span></div>
+                        <div>HP: <span id="player-hp"></span>/<span id="player-max-hp"></span></div>
+                        <div>XP: <span id="player-xp"></span></div>
+                        <div>Gold: <span id="player-gold"></span></div>
+                        <div>Depth: <span id="dungeon-depth"></span></div>
+                    </div>
+                    
+                    <div class="stat-block">
+                        <h3>Equipment</h3>
+                        <div>Weapon: <span id="weapon"></span></div>
+                        <div>Armor: <span id="armor"></span></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="stat-block">
+                        <br>
+                        <div>Strength: 0</div>
+                        <div>Constitution: 0</div>
+                        <div>Dexterity: 0</div>
+                        <div>Ego: 0</div>
+                        <div>Charisma: 0</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="stat-block">
+                        <br>
+                        <div>Background: </div>
+                        <div>Class: </div>
+                        <div>Pet: </div>
+                    </div>
+                </div>
             </div>
-            
-            <div class="stat-block">
-                <h3>Equipment</h3>
-                <div>Weapon: <span id="weapon"></span></div>
-                <div>Armor: <span id="armor"></span></div>
-            </div>
-            
             <div class="message-log" id="message-log">
                 <div class="message">You awaken in darkness, your memory foggy...</div>
                 <div class="message">Who are you? Why are you here?</div>

@@ -56,6 +56,7 @@
                         hasMemory: CONFIG.PLAYER_DEFAULTS.hasMemory,
                         alive: true
                     },
+                    backgroundList: CONFIG.PLAYER_CHOICES_DATABASE.backgrounds,
                     dungeon: [],
                     monsters: [],
                     treasures: [],
