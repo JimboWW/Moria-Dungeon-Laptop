@@ -51,10 +51,10 @@
 
             PLAYER_CHOICES_DATABASE: {
                 backgrounds: [
-                    { name: 'Aikido Master', strength: 5, constitution: 5, dexterity: 4, ego: 8, charisma: 3, pet: 'None',
+                    { id: 1, name: 'Aikido Master', strength: 5, constitution: 5, dexterity: 4, ego: 8, charisma: 3, pet: 'None',
                         weapon: 'None', armor: 'Gi', skills: [], description: 'You are a 7th-dan black belt in Aikido who has defeated hundreds of "opponents" during choreographed demonstrations.  While going outside to get your mail the opportunity of a lifetime occurs.  Stairs to the Dungeon Treasure Hunt opens up and you head down to prove that Aikido is the best.'
                     },
-                    { name: 'Cat Lady', strength: 3, constitution: 5, dexterity: 4, ego: 4, charisma: 3, pet: 'Cat',
+                    { id:2, name: 'Cat Lady', strength: 3, constitution: 5, dexterity: 4, ego: 4, charisma: 3, pet: 'Cat',
                         weapon: 'None', armor: 'Bath Robe', skills: [], description: 'While refilling your glass of box wine your cat escaped through an open window.  Running outside to chase the cat you see it running down stairs in the middle of the street.  If you were sober maybe you would not have chased it down the stairs leaving your other seven cats without an owner.  Welcome to the Dungeon Treasure Hunt!'
                     }
                 ],

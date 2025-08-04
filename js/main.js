@@ -3,6 +3,7 @@
         const gameContainerDiv = document.getElementById('game-container-div');
         const createCharacterDiv = document.getElementById('create-character-div');
         const newCharacterName = document.getElementById('p-name');
+        const buttonBackgroundDiv = document.getElementById('buttonContainerCreate');
 
         const GameState = {
             // Current game state
@@ -20,8 +21,19 @@
                     armor: CONFIG.PLAYER_DEFAULTS.armor,
                     name: CONFIG.PLAYER_DEFAULTS.name,
                     hasMemory: CONFIG.PLAYER_DEFAULTS.hasMemory,
-                    alive: true
+                    strength: CONFIG.PLAYER_DEFAULTS.strength,
+                    constitution: CONFIG.PLAYER_DEFAULTS.constitution,
+                    dexterity: CONFIG.PLAYER_DEFAULTS.dexterity,
+                    ego: CONFIG.PLAYER_DEFAULTS.ego,
+                    charisma: CONFIG.PLAYER_DEFAULTS.charisma,
+                    background: CONFIG.PLAYER_DEFAULTS.background,
+                    class: CONFIG.PLAYER_DEFAULTS.class,
+                    pet: CONFIG.PLAYER_DEFAULTS.pet,
+                    alive: true,
+                    startMessage: 'none'
                 },
+                backgroundList: CONFIG.PLAYER_CHOICES_DATABASE.backgrounds,
+                petList: CONFIG.PLAYER_CHOICES_DATABASE.pets,
                 dungeon: [],
                 monsters: [],
                 treasures: [],
@@ -54,9 +66,19 @@
                         armor: CONFIG.PLAYER_DEFAULTS.armor,
                         name: CONFIG.PLAYER_DEFAULTS.name,
                         hasMemory: CONFIG.PLAYER_DEFAULTS.hasMemory,
-                        alive: true
+                        strength: CONFIG.PLAYER_DEFAULTS.strength,
+                        constitution: CONFIG.PLAYER_DEFAULTS.constitution,
+                        dexterity: CONFIG.PLAYER_DEFAULTS.dexterity,
+                        ego: CONFIG.PLAYER_DEFAULTS.ego,
+                        charisma: CONFIG.PLAYER_DEFAULTS.charisma,
+                        background: CONFIG.PLAYER_DEFAULTS.background,
+                        class: CONFIG.PLAYER_DEFAULTS.class,
+                        pet: CONFIG.PLAYER_DEFAULTS.pet,
+                        alive: true,
+                        startMessage: 'none'
                     },
                     backgroundList: CONFIG.PLAYER_CHOICES_DATABASE.backgrounds,
+                    petList: CONFIG.PLAYER_CHOICES_DATABASE.pets,
                     dungeon: [],
                     monsters: [],
                     treasures: [],
@@ -187,7 +209,17 @@
             // Messages
             getMessages() {
                 return this.state.messages;
-            }
+            },
+
+            // Backgrounds
+            getBackgrounds() {
+                return this.state.backgroundList;
+            },
+
+            // Pets
+            getPets() {
+                return this.state.petList;
+            },
         };
 
         // Utility functions
@@ -386,6 +418,18 @@
                 document.getElementById('dungeon-depth').textContent = depth;
                 document.getElementById('weapon').textContent = player.weapon;
                 document.getElementById('armor').textContent = player.armor;
+                document.getElementById('player-background1').textContent = player.background;
+                document.getElementById('player-background2').textContent = player.background;
+                document.getElementById('player-strength1').textContent = player.strength;
+                document.getElementById('player-strength2').textContent = player.strength;
+                document.getElementById('player-constitution1').textContent = player.constitution;
+                document.getElementById('player-constitution2').textContent = player.constitution;
+                document.getElementById('player-dexterity1').textContent = player.dexterity;
+                document.getElementById('player-dexterity2').textContent = player.dexterity;
+                document.getElementById('player-ego1').textContent = player.ego;
+                document.getElementById('player-ego2').textContent = player.ego;
+                document.getElementById('player-charisma1').textContent = player.charisma;
+                document.getElementById('player-charisma2').textContent = player.charisma;               
             },
             
             // Update message log
@@ -889,14 +933,25 @@
             // Initialize the game
             init() {
                 GameState.reset();
+                const buttonData = GameState.state.backgroundList;
+                const container = document.getElementById('buttonContainerCreate');
+                buttonData.forEach(buttonInfo => {
+                    const button = document.createElement('button');
+                    button.id = buttonInfo.id;
+                    button.innerText = buttonInfo.name;
+                    container.appendChild(button);
+                    button.addEventListener('click', function() {
+                        selectBackground(button.id);
+                    });
+                });
                 this.generateNewLevel();
                 Player.initialize();
                 UI.updateDisplay();
                 // Remove this.setupEventListeners() from init
                 // Initial messages
-                UI.addMessage("You awaken in darkness, your memory foggy...");
-                UI.addMessage("Who are you? Why are you here?");
-                UI.addMessage("Perhaps the answers lie deeper in the dungeon...");
+                //UI.addMessage("You awaken in darkness, your memory foggy...");
+                //UI.addMessage("Who are you? Why are you here?");
+                //UI.addMessage("Perhaps the answers lie deeper in the dungeon...");
             },
             
             // Generate a new dungeon level
@@ -998,6 +1053,7 @@
             if (GameState.state.currentScreen == "dungeon") {
                 gameContainerDiv.style.display = "flex";
                 createCharacterDiv.style.display = "none";
+                buttonBackgroundDiv.style.display = "none";
                 UI.updateDisplay();
             }
         }
@@ -1006,5 +1062,17 @@
             GameState.state.gameActive = true;
             GameState.state.currentScreen = "dungeon";
             GameState.state.player.name = newCharacterName.value;
+            UI.addMessage(GameState.state.player.startMessage);
             activeScreen();
+        }
+
+        function selectBackground(id) {
+            GameState.state.player.background = GameState.state.backgroundList[id - 1].name;
+            GameState.state.player.strength = GameState.state.backgroundList[id - 1].strength;
+            GameState.state.player.constitution = GameState.state.backgroundList[id - 1].constitution;
+            GameState.state.player.dexterity = GameState.state.backgroundList[id - 1].dexterity;
+            GameState.state.player.ego = GameState.state.backgroundList[id - 1].ego;
+            GameState.state.player.charisma = GameState.state.backgroundList[id - 1].charisma;
+            GameState.state.player.startMessage = GameState.state.backgroundList[id - 1].description;
+            UI.updateDisplay();
         }

@@ -30,16 +30,30 @@
 </head>
 <body>
     <h1>MORIA DUNGEON</h1>
-    
-    <div class="create-character" id="create-character-div" style="display: block;">
-        <div class="stat-block">
-            <h3>Character Stats</h3>
-            <label for="p-name">Name (4 to 12 characters):</label>
-            <input required type="text" id="p-name" name="p-name" minlength="4" maxlength="12" size ="14" />
-            <div>Background: </div>
-            <div>Level: 1</div>
-            <button onclick="createCharacter()">Create</button> 
+    <div>
+        <div class="create-character" id="create-character-div" style="display: flex;">
+            <div class="left-column">
+                <div class="stat-block">
+                    <h3>Character Stats</h3>
+                    <label for="p-name">Name (4 to 12 characters):</label>
+                    <input required type="text" id="p-name" name="p-name" minlength="4" maxlength="12" size ="14" />
+                    <div>Background: <span id="player-background1"></span></div>
+                    <div>Level: 1</div>
+                    <button onclick="createCharacter()">Create</button> 
+                </div>
+            </div>
+            <div class="right-column">
+                <div class="stat-block">
+                    <br>
+                    <div>Strength: <span id="player-strength1"></span></div>
+                    <div>Constitution: <span id="player-constitution1"></span></div>
+                    <div>Dexterity: <span id="player-dexterity1"></span></div>
+                    <div>Ego: <span id="player-ego1"></span></div>
+                    <div>Charisma: <span id="player-charisma1"></span></div>
+                </div>
+            </div>
         </div>
+        <div id="buttonContainerCreate"></div>
     </div>
 
     <div class="game-container" id="game-container-div" style="display: none;">
@@ -77,17 +91,17 @@
                 <div>
                     <div class="stat-block">
                         <br>
-                        <div>Strength: 0</div>
-                        <div>Constitution: 0</div>
-                        <div>Dexterity: 0</div>
-                        <div>Ego: 0</div>
-                        <div>Charisma: 0</div>
+                        <div>Strength: <span id="player-strength2"></span></div>
+                        <div>Constitution: <span id="player-constitution2"></span></div>
+                        <div>Dexterity: <span id="player-dexterity2"></span></div>
+                        <div>Ego: <span id="player-ego2"></span></div>
+                        <div>Charisma: <span id="player-charisma2"></span></div>
                     </div>
                 </div>
                 <div>
                     <div class="stat-block">
                         <br>
-                        <div>Background: </div>
+                        <div>Background: <span id="player-background2"></span></div>
                         <div>Class: </div>
                         <div>Pet: </div>
                     </div>

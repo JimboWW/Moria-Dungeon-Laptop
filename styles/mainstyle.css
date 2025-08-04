@@ -18,6 +18,15 @@ body {
     overflow: hidden; /* Prevent internal scrolling */
 }
 
+.create-character {
+    display: flex;
+    gap: 15px;
+    max-height: calc(100vh - 44px); /* Adjusted for <h1> (24px font + 20px margin) */
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Prevent internal scrolling */
+}
+
 .left-column {
     display: flex;
     flex-direction: column;
