@@ -1,7 +1,7 @@
         const CONFIG = {
             DUNGEON_WIDTH: 80,
             DUNGEON_HEIGHT: 24,
-            
+            // Test comment by Jim 8/5
             // Symbols used in the game
             SYMBOLS: {
                 player: '@',
